@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +27,16 @@ class Category
      * @ORM\OneToOne(targetEntity="App\Entity\Configuration", mappedBy="category_id", cascade={"persist", "remove"})
      */
     private $configuration;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="category_id", orphanRemoval=true)
+     */
+    private $invoices;
+
+    public function __construct()
+    {
+        $this->invoices = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -55,6 +67,37 @@ class Category
         // set the owning side of the relation if necessary
         if ($configuration->getCategoryId() !== $this) {
             $configuration->setCategoryId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Invoice[]
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): self
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices[] = $invoice;
+            $invoice->setCategoryId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): self
+    {
+        if ($this->invoices->contains($invoice)) {
+            $this->invoices->removeElement($invoice);
+            // set the owning side to null (unless already changed)
+            if ($invoice->getCategoryId() === $this) {
+                $invoice->setCategoryId(null);
+            }
         }
 
         return $this;

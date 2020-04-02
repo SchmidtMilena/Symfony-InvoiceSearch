@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ConfigurationRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
  */
-class Configuration
+class Invoice
 {
     /**
      * @ORM\Id()
@@ -17,7 +17,7 @@ class Configuration
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Category", inversedBy="configuration", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
@@ -25,10 +25,10 @@ class Configuration
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $invoice_number;
+    private $number;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="datetime")
      */
     private $issue_date;
 
@@ -43,27 +43,22 @@ class Configuration
     private $buyer;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $products;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=150, nullable=true)
      */
     private $form_of_payment;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $due_date;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $delivery;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=100)
      */
     private $total_amount;
 
@@ -77,31 +72,31 @@ class Configuration
         return $this->category;
     }
 
-    public function setCategory(Category $category): self
+    public function setCategoryId(?Category $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getInvoiceNumber(): ?string
+    public function getNumber(): ?string
     {
-        return $this->invoice_number;
+        return $this->number;
     }
 
-    public function setInvoiceNumber(string $invoice_number): self
+    public function setNumber(string $number): self
     {
-        $this->invoice_number = $invoice_number;
+        $this->number = $number;
 
         return $this;
     }
 
-    public function getIssueDate(): ?string
+    public function getIssueDate(): ?\DateTimeInterface
     {
         return $this->issue_date;
     }
 
-    public function setIssueDate(string $issue_date): self
+    public function setIssueDate(\DateTimeInterface $issue_date): self
     {
         $this->issue_date = $issue_date;
 
@@ -132,18 +127,6 @@ class Configuration
         return $this;
     }
 
-    public function getProducts(): ?string
-    {
-        return $this->products;
-    }
-
-    public function setProducts(?string $products): self
-    {
-        $this->products = $products;
-
-        return $this;
-    }
-
     public function getFormOfPayment(): ?string
     {
         return $this->form_of_payment;
@@ -156,12 +139,12 @@ class Configuration
         return $this;
     }
 
-    public function getDueDate(): ?string
+    public function getDueDate(): ?\DateTimeInterface
     {
         return $this->due_date;
     }
 
-    public function setDueDate(?string $due_date): self
+    public function setDueDate(?\DateTimeInterface $due_date): self
     {
         $this->due_date = $due_date;
 
